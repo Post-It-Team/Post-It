@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Parrot</string>
+    <string name="action_settings">Settings</string>
+    <string name="fab_checklist">Checklist</string>
+    <string name="fab_note_photographs">Note hình ảnh</string>
+    <string name="fab_note_text">Ghi chép</string>
+    <string name="fab_event">Sự kiện</string>
+    <string name="demo_text">The first seven days after install are the most critical for retention: users install several apps to try them, and decide in the first few days which ones they want to keep using. If you can retain for that time span, your app is more likely to become part of the user’s daily routine</string>
+    <string name="activity_checklist">Lời nhắc</string>
+    <string name="activity_note">Ghi Chép</string>
+
+    <string name="add_checklist">Thêm lời nhắc</string>
+    <string name="check_list">Checklist</string>
+
+    <string name="label_tv_date">Ngày</string>
+    <string name="label_tv_time">Giờ</string>
+    
+    <string name="positive_action">OK</string>
+    <string name="negative_action">CANCEL</string>
+</resources>
+
