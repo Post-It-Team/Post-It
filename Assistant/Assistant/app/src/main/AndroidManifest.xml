@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.sunbook.parrot.calendar.CalendarActivity">
+        </activity>
+        <activity android:name=".checklist.ChecklistActivity">
 
         </activity>
     </application>

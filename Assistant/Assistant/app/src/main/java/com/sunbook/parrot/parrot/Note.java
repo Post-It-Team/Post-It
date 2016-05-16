@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
  */
 public class Note implements AlarmParrot {
 
+    private int id;
     private String title;
     private String description;
     private long deadline;
@@ -103,5 +104,13 @@ public class Note implements AlarmParrot {
     @Override
     public void alarm() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

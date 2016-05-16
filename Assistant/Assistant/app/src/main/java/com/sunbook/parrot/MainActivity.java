@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cardChecklist.setVisibility(View.INVISIBLE);
         }else {
             CheckListAdapter checkListAdapter = new CheckListAdapter(MainActivity.this,
-                    R.layout.checklist_item, listTask);
+                    R.layout.checklist_item, listTask, checkListDB);
             ListView lvCheckList = (ListView)findViewById(R.id.lv_checklist);
             lvCheckList.setAdapter(checkListAdapter);
             report.setVisibility(View.INVISIBLE);
@@ -202,7 +202,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addCheckList(){
-
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(R.string.check_list)
                 .customView(R.layout.layout_dialog_add_checklist, true)

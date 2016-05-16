@@ -71,6 +71,8 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
         if(cursor == null){
             return null;
         }
+        int id = cursor.getInt(cursor.getColumnIndex(_ID));
+        task.setId(id);
         String taskTitle = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
         task.setTitle(taskTitle);
         long deadline = cursor.getLong(cursor.getColumnIndex(COLUMN_DEADLINE));
@@ -90,6 +92,7 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
 
     public void setContentValues(Checklist task) {
         this.contentValues = new ContentValues();
+        contentValues.put(_ID,task.getId());
         contentValues.put(COLUMN_TITLE,task.getTitle());
         contentValues.put(COLUMN_DEADLINE,task.getDeadline());
         contentValues.put(COLUMN_IMPORTANT,1);
