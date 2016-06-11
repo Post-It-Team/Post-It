@@ -91,9 +91,18 @@ public class CheckListAdapter extends ArrayAdapter<Checklist> {
     public void setDoneChecklist(int position, boolean done){
         Checklist checklist = dataCheckList.get(position);
         checklist.setIsDone(done);
-        checkListDB.daoAccess.setContentValues(checklist);
-        ContentValues updateChecklist = checkListDB.daoAccess.getContentValues();
-        checkListDB.daoAccess.update(ChecklistSchema.CHECKLIST_TABLE,updateChecklist,
+        ContentValues values = new ContentValues();
+        values.put(ChecklistSchema._ID,checklist.getId());
+        values.put(ChecklistSchema.COLUMN_TITLE,checklist.getTitle());
+        values.put(ChecklistSchema.COLUMN_DEADLINE,checklist.getDeadline());
+        values.put(ChecklistSchema.COLUMN_IMPORTANT,1);
+        if(checklist.isDone()){
+            values.put(ChecklistSchema.COLUMN_DONE,1);
+        }else {
+            values.put(ChecklistSchema.COLUMN_DONE,0);
+        }
+
+        checkListDB.daoAccess.update(ChecklistSchema.CHECKLIST_TABLE,values,
                 "_id = "+checklist.getId(),null);
     }
 

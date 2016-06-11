@@ -92,7 +92,7 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
 
     public void setContentValues(Checklist task) {
         this.contentValues = new ContentValues();
-        contentValues.put(_ID,task.getId());
+//        contentValues.put(_ID,task.getId());
         contentValues.put(COLUMN_TITLE,task.getTitle());
         contentValues.put(COLUMN_DEADLINE,task.getDeadline());
         contentValues.put(COLUMN_IMPORTANT,1);

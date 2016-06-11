@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 fabMenu.collapse();
-                return false;
+                return true;
             }
         });
     }
@@ -297,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
 
         builder.positiveAction("OK").negativeAction("CANCEL");
-
         DialogFragment fragment = DialogFragment.newInstance(builder);
         fragment.show(getSupportFragmentManager(), null);
     }
