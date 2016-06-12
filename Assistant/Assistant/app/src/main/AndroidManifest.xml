@@ -18,9 +18,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.sunbook.parrot.calendar.CalendarActivity">
+        <activity
+            android:label="@string/calendar_activity_label"
+            android:name="com.sunbook.parrot.calendar.CalendarActivity"
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".checklist.ChecklistActivity">
+        <activity
+            android:name=".checklist.ChecklistActivity"
+            android:label="@string/checklist_activity_label"
+            android:theme="@style/Checklist_Activity_Theme"
+            android:parentActivityName=".MainActivity">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity" />
 
         </activity>
     </application>

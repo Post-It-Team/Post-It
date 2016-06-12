@@ -17,5 +17,7 @@
     
     <string name="positive_action">OK</string>
     <string name="negative_action">CANCEL</string>
+    <string name="checklist_activity_label">Checklist</string>
+    <string name="calendar_activity_label">Lịch</string>
 </resources>
 
