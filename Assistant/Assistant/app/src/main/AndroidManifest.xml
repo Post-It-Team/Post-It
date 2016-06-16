@@ -26,7 +26,6 @@
         <activity
             android:name=".checklist.ChecklistActivity"
             android:label="@string/checklist_activity_label"
-            android:theme="@style/Checklist_Activity_Theme"
             android:parentActivityName=".MainActivity">
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
