@@ -66,6 +66,12 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
     }
 
     @Override
+    public boolean deleteReminder(String id) {
+        String where = ChecklistSchema._ID + " = ?";
+        return super.delete(CHECKLIST_TABLE,where,new String[]{id}) > 0;
+    }
+
+    @Override
     protected Checklist cursorToEntity(Cursor cursor) {
         Checklist task = new Checklist();
         if(cursor == null){

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long dateSelected = 0;
     private long timeSelected = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         checkListDB = new CheckListDB(this);
         checkListDB.open();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         loadCheckList();
     }
 
@@ -211,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Toast.makeText(MainActivity.this, remindInput.getText(), Toast.LENGTH_SHORT).show();
+                        checkListDB.open();
                         Checklist reminder = new Checklist(remindInput.getText().toString(),dateSelected,false);
                         insertToDatabase(reminder);
                     }

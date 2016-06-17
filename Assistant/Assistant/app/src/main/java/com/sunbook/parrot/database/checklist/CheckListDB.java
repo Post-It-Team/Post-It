@@ -14,6 +14,10 @@ public class CheckListDB {
     private static final int DB_VERSION = 1;
     private final Context mContext;
     public static CheckListDAOAccess daoAccess;
+    public static final String ACTION_UPDATE_REMINDER = "postit.database.UPDATE_REMINDER";
+    public static final String ACTION_DELETE_REMINDER = "postit.database.DELETE_REMINDER";
+    public static final String KEY_ID_REMINDER = "id_reminder";
+
 
     public CheckListDB(Context mContext) {
         this.mContext = mContext;

@@ -11,6 +11,7 @@
 
     <string name="add_checklist">Thêm lời nhắc</string>
     <string name="check_list">Checklist</string>
+    <string name="delete_reminder_fail">Xóa không thành công</string>
 
     <string name="label_tv_date">Ngày</string>
     <string name="label_tv_time">Giờ</string>

@@ -1,6 +1,7 @@
 package com.sunbook.parrot.checklist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.sunbook.parrot.R;
+import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.parrot.Checklist;
 
 import java.util.ArrayList;
@@ -45,8 +47,11 @@ public class ListTaskAdapter extends BaseSwipeAdapter {
         view.findViewById(R.id.layout_delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(context,"delete "+position,Toast.LENGTH_SHORT).show();
+                Intent intentDel = new Intent(CheckListDB.ACTION_DELETE_REMINDER);
+                String idReminder = String.valueOf(getItemId(position));
+                intentDel.putExtra(CheckListDB.KEY_ID_REMINDER,idReminder);
+                intentDel.putExtra("position",position);
+                context.sendBroadcast(intentDel);
             }
         });
         return view;
@@ -77,6 +82,6 @@ public class ListTaskAdapter extends BaseSwipeAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return checklists.get(position).getId();
     }
 }

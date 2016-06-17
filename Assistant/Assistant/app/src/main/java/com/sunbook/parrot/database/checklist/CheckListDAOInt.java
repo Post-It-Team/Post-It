@@ -9,9 +9,10 @@ import java.util.List;
  */
 public interface CheckListDAOInt {
 
-    public CheckListDAOInt getCheckListById(int checkListId);
-    public List<Checklist> getAllCheckList();
-    public boolean addCheckList(Checklist checklist);
-    public boolean addChecklists(List<Checklist> lists);
-    public boolean deleteAllCheckList();
+    CheckListDAOInt getCheckListById(int checkListId);
+    List<Checklist> getAllCheckList();
+    boolean addCheckList(Checklist checklist);
+    boolean addChecklists(List<Checklist> lists);
+    boolean deleteAllCheckList();
+    boolean deleteReminder(String id);
 }
