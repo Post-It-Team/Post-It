@@ -1,6 +1,6 @@
 package com.sunbook.parrot.database.checklist;
 
-import com.sunbook.parrot.parrot.Checklist;
+import com.sunbook.parrot.postit.Checklist;
 
 import java.util.List;
 

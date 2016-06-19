@@ -4,9 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +15,7 @@ import android.widget.Toast;
 import com.daimajia.swipe.SwipeLayout;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
-import com.sunbook.parrot.parrot.Checklist;
+import com.sunbook.parrot.postit.Checklist;
 
 import java.util.ArrayList;
 
@@ -34,6 +33,7 @@ public class ChecklistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checklist);
+        getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         checkListDB = new CheckListDB(this);
         checkListDB.open();
         generateReminder();

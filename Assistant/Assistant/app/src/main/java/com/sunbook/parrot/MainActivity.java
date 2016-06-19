@@ -17,7 +17,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -36,7 +35,7 @@ import com.sunbook.parrot.material.DatePickerDialog;
 import com.sunbook.parrot.material.DialogFragment;
 import com.sunbook.parrot.material.TimePickerDialog;
 import com.sunbook.parrot.material.dialog.Dialog;
-import com.sunbook.parrot.parrot.Checklist;
+import com.sunbook.parrot.postit.Checklist;
 import com.sunbook.parrot.utils.StringUtil;
 
 import java.text.SimpleDateFormat;

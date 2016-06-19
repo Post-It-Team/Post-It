@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.sunbook.parrot.parrot.Checklist;
+import com.sunbook.parrot.postit.Checklist;
 
 /**
  * Created by hieuapp on 04/04/2016.

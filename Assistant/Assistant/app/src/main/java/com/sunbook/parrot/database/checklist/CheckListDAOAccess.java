@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.sunbook.parrot.database.DBContentProvider;
-import com.sunbook.parrot.parrot.Checklist;
+import com.sunbook.parrot.postit.Checklist;
 
 import java.util.ArrayList;
 import java.util.List;

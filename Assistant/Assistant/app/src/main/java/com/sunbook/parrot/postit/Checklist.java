@@ -1,9 +1,11 @@
-package com.sunbook.parrot.parrot;
+package com.sunbook.parrot.postit;
+
+import java.util.Date;
 
 /**
  * Created by hieuapp on 06/03/2016.
  */
-public class Checklist extends Note implements AlarmParrot {
+public class Checklist extends Note implements AlarmPostIt {
     private boolean isDone;
 
     public Checklist(){
@@ -31,4 +33,6 @@ public class Checklist extends Note implements AlarmParrot {
     public void setIsDone(boolean isDone) {
         this.isDone = isDone;
     }
+
+
 }

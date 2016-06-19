@@ -1,11 +1,13 @@
-package com.sunbook.parrot.parrot;
+package com.sunbook.parrot.postit;
 
 import android.graphics.Bitmap;
+
+import java.util.Date;
 
 /**
  * Created by hieuapp on 28/02/2016.
  */
-public class Note implements AlarmParrot {
+public class Note implements AlarmPostIt {
 
     private int id;
     private String title;
@@ -15,6 +17,18 @@ public class Note implements AlarmParrot {
     private boolean important;
     private Bitmap avatar;
     private String history;
+
+    public int checkDeadline() {
+        Date today = new Date();
+        long deltaTime = deadline - today.getTime();
+        if(deadline == 0 || deltaTime > 2*86400000){
+            return IN_DATE;
+        }else if(deltaTime >= 0 && deltaTime <= 2*86400000){
+            return NEAR_DEADLINE;
+        }else {
+            return OUT_OF_DATE;
+        }
+    }
 
     public Note(){
     }

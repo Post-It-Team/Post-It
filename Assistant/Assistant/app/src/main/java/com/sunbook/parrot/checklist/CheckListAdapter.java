@@ -3,10 +3,8 @@ package com.sunbook.parrot.checklist;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,7 @@ import com.sunbook.parrot.MainActivity;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.database.checklist.ChecklistSchema;
-import com.sunbook.parrot.parrot.Checklist;
+import com.sunbook.parrot.postit.Checklist;
 import com.sunbook.parrot.utils.StringUtil;
 
 import java.util.ArrayList;
@@ -60,28 +58,19 @@ public class CheckListAdapter extends ArrayAdapter<Checklist> {
         Typeface regular = StringUtil.getTypeface(context,StringUtil.ROBOTO_SLAB_REGULAR);
         viewHolder.name.setTypeface(regular);
         final ViewHolder finalViewHolder = viewHolder;
-        long deadline = dataCheckList.get(position).getDeadline();
-        if(deadline != 0){
-            String date = StringUtil.dateFomat(deadline);
-            viewHolder.deadline.setText(date);
-        }else {
-            viewHolder.deadline.setText("");
-        }
         if(dataCheckList.get(position).isDone()){
             viewHolder.checkBox.setChecked(true);
-            viewHolder.name.setPaintFlags(viewHolder.name.getPaintFlags()  | Paint.STRIKE_THRU_TEXT_FLAG);
+            StringUtil.setTaskHiden(viewHolder.name);
         }
         viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(((CheckBox)v).isChecked()){
-                    finalViewHolder.name.setPaintFlags(finalViewHolder.name.getPaintFlags()
-                            | Paint.STRIKE_THRU_TEXT_FLAG);
+                    StringUtil.setTaskHiden(finalViewHolder.name);
                     setDoneChecklist(position,true);
                 }else {
                     // un trike text
-                    finalViewHolder.name.setPaintFlags(finalViewHolder.name.getPaintFlags()
-                            & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    StringUtil.setTaskDisplay(finalViewHolder.name);
                     setDoneChecklist(position,false);
                 }
             }
@@ -115,7 +104,6 @@ public class CheckListAdapter extends ArrayAdapter<Checklist> {
             super(itemView);
             checkBox = (CheckBox)itemView.findViewById(R.id.cb_checklist);
             name = (TextView)itemView.findViewById(R.id.tv_name);
-            deadline = (TextView)itemView.findViewById(R.id.tv_deadline);
             itemView.setOnClickListener(this);
             this.context = context;
         }

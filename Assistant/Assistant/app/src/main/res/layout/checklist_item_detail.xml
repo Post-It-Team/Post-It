@@ -10,13 +10,13 @@
 
     <LinearLayout
         android:background="@color/colorPrimaryDark"
-        android:layout_width="72dp"
+        android:layout_width="80dp"
         android:clickable="true"
         android:id="@+id/layout_delete"
         android:layout_height="match_parent">
 
         <ImageView
-            android:layout_marginLeft="24dp"
+            android:layout_marginLeft="28dp"
             android:layout_gravity="center"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -24,8 +24,11 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/task_layout"
         android:layout_width="match_parent"
-        android:layout_height="56dp">
+        android:minHeight="56dp"
+        android:background="#FFFFFF"
+        android:layout_height="wrap_content">
         <CheckBox
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
@@ -44,6 +47,8 @@
             android:src="@mipmap/ic_star_border_48dp"/>
 
         <TextView
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/im_star"
