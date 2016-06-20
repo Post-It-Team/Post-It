@@ -40,8 +40,8 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/cb_item"
             android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:clickable="true"
             android:id="@+id/im_star"
             android:src="@mipmap/ic_star_border_48dp"/>
@@ -60,6 +60,8 @@
             android:id="@+id/tv_reminder"/>
 
         <TextView
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="16dp"

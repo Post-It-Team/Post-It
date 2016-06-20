@@ -17,7 +17,7 @@ import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.database.checklist.ChecklistSchema;
 import com.sunbook.parrot.postit.Checklist;
-import com.sunbook.parrot.utils.StringUtil;
+import com.sunbook.parrot.utils.Interface;
 
 import java.util.ArrayList;
 
@@ -55,22 +55,22 @@ public class CheckListAdapter extends ArrayAdapter<Checklist> {
 
     public void showCheckList(ViewHolder viewHolder, final ArrayList<Checklist> dataCheckList, final int position){
         viewHolder.name.setText(dataCheckList.get(position).getTitle());
-        Typeface regular = StringUtil.getTypeface(context,StringUtil.ROBOTO_SLAB_REGULAR);
+        Typeface regular = Interface.getTypeface(context, Interface.ROBOTO_SLAB_REGULAR);
         viewHolder.name.setTypeface(regular);
         final ViewHolder finalViewHolder = viewHolder;
         if(dataCheckList.get(position).isDone()){
             viewHolder.checkBox.setChecked(true);
-            StringUtil.setTaskHiden(viewHolder.name);
+            Interface.setTextHiden(viewHolder.name);
         }
         viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(((CheckBox)v).isChecked()){
-                    StringUtil.setTaskHiden(finalViewHolder.name);
+                    Interface.setTextHiden(finalViewHolder.name);
                     setDoneChecklist(position,true);
                 }else {
                     // un trike text
-                    StringUtil.setTaskDisplay(finalViewHolder.name);
+                    Interface.setTaskDisplay(finalViewHolder.name);
                     setDoneChecklist(position,false);
                 }
             }

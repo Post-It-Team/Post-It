@@ -36,7 +36,7 @@ import com.sunbook.parrot.material.DialogFragment;
 import com.sunbook.parrot.material.TimePickerDialog;
 import com.sunbook.parrot.material.dialog.Dialog;
 import com.sunbook.parrot.postit.Checklist;
-import com.sunbook.parrot.utils.StringUtil;
+import com.sunbook.parrot.utils.Interface;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
         tvCardTitle = (TextView)findViewById(R.id.tv_title_card);
-        Typeface light = Typeface.createFromAsset(getAssets(), StringUtil.ROBOTO_SLAB_REGULAR);
+        Typeface light = Typeface.createFromAsset(getAssets(), Interface.ROBOTO_SLAB_REGULAR);
         tvCardTitle.setTextColor(Color.BLACK);
         tvCardTitle.setTypeface(light);
         report = (RelativeLayout)findViewById(R.id.report_empty);
