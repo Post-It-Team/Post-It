@@ -3,7 +3,7 @@ package com.sunbook.parrot;
 import android.util.Log;
 
 import com.sunbook.parrot.postit.AlarmPostIt;
-import com.sunbook.parrot.postit.Checklist;
+import com.sunbook.parrot.postit.Reminder;
 import com.sunbook.parrot.postit.Note;
 
 /**
@@ -25,7 +25,7 @@ public class NoteFactory {
             case NOTE:
                 return new Note();
             case CHECKLIST:
-                return new Checklist();
+                return new Reminder();
             default:
                 Log.e(TAG, "note type is undefine");
         }

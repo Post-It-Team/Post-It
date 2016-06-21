@@ -1,18 +1,15 @@
 package com.sunbook.parrot.utils;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunbook.parrot.R;
-import com.sunbook.parrot.database.checklist.CheckListDB;
-import com.sunbook.parrot.postit.Checklist;
+import com.sunbook.parrot.postit.Reminder;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -20,11 +17,12 @@ import java.util.Locale;
 /**
  * Created by hieuapp on 03/04/2016.
  */
-public class Interface {
+public class PostItUI {
     public static final String TYPE_ROBOTO_THIN = "Thin";
-    public static final String TYPE_ROBOTO_LIGHT = "Light";
+    public static final String ROBOTO_LIGHT = "RobotoTTF/Roboto-Light.ttf";
     public static final String ROBOTO_SLAB_REGULAR = "RobotoSlab/RobotoSlab-Regular.ttf";
     public static final String ROBOTO_SLAB_BOLD = "RobotoSlab/RobotoSlab-Bold.ttf";
+    public static final String ROBOTO_BOLD = "RobotoTTF/Roboto-Bold.ttf";
     public static final String GRAY_300 = "#E0E0E0";
     public static final String GRAY_400 = "#BDBDBD";
     public static final String TEXT_DISABLE_MATERIAL_DARK = "#4DFFFFFF";
@@ -45,53 +43,51 @@ public class Interface {
     }
 
     public static void setTaskHiden(Context context,View convertview){
-        RelativeLayout layoutTask = (RelativeLayout)convertview.findViewById(R.id.task_layout);
         ImageView star = (ImageView)convertview.findViewById(R.id.im_star);
         TextView taskName = (TextView) convertview.findViewById(R.id.tv_reminder);
         TextView date = (TextView) convertview.findViewById(R.id.tv_date);
-        layoutTask.setBackgroundColor(Color.WHITE);
         star.setImageResource(R.mipmap.ic_start_hiden);
-        taskName.setTextColor(Color.parseColor(GRAY_300));
+        taskName.setTextColor(PostItColor.getDisableColor());
         taskName.setPaintFlags(taskName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        Interface.setTextFont(context,taskName,ROBOTO_SLAB_REGULAR);
-        date.setTextColor(Color.parseColor(GRAY_300));
+        setTextFont(context,taskName,ROBOTO_LIGHT);
+        date.setTextColor(PostItColor.getDisableColor());
         date.setBackgroundColor(Color.WHITE);
     }
 
-    public static void setTaskDisplay(Context context,View convertview, Checklist task){
+    public static void setTaskDisplay(Context context,View convertview, Reminder task){
         ImageView star = (ImageView)convertview.findViewById(R.id.im_star);
         TextView taskName = (TextView) convertview.findViewById(R.id.tv_reminder);
         TextView date = (TextView) convertview.findViewById(R.id.tv_date);
         star.setImageResource(R.mipmap.ic_star_yellow);
-        taskName.setTextColor(PostItColor.getSecondaryColor());
         taskName.setPaintFlags(taskName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-        date.setTextColor(PostItColor.getSecondaryColor());
-        if(task.checkDeadline() != Checklist.IN_DATE){
-            Interface.setTextFont(context,taskName,ROBOTO_SLAB_BOLD);
-            taskName.setTextColor(Color.BLACK);
+        taskName.setTextColor(Color.BLACK);
+        if(task.checkDeadline() != Reminder.IN_DATE){
+            PostItUI.setTextFont(context,taskName,ROBOTO_BOLD);
             date.setTextColor(Color.WHITE);
             date.setBackgroundColor(Color.parseColor(PostItColor.TEAL_500));
         }
-        setBackgroundTask(context,task,convertview);
+        setDateColor(context,task,convertview);
     }
 
-    public static void setBackgroundTask(Context context, Checklist task, View convertView){
-        RelativeLayout taskLayout = (RelativeLayout)convertView.findViewById(R.id.task_layout);
+    public static void setDateColor(Context context, Reminder task, View convertView){
+        TextView date = (TextView) convertView.findViewById(R.id.tv_date);
         int deadlineStatus = task.checkDeadline();
         switch (deadlineStatus){
-            case Checklist.IN_DATE:
-                taskLayout.setBackgroundColor(Color.WHITE);
+            case Reminder.IN_DATE:
+                date.setBackgroundColor(Color.WHITE);
+                date.setTextColor(Color.BLACK);
                 break;
-            case Checklist.NEAR_DEADLINE:
+            case Reminder.NEAR_DEADLINE:
                 int bgColor = context.getResources().getColor(R.color.yellow_300);
-                taskLayout.setBackgroundColor(bgColor);
+                date.setBackgroundColor(bgColor);
+                date.setTextColor(Color.BLACK);
                 break;
-            case Checklist.OUT_OF_DATE:
+            case Reminder.OUT_OF_DATE:
                 int bgRed = context.getResources().getColor(R.color.red_300);
-                taskLayout.setBackgroundColor(bgRed);
+                date.setBackgroundColor(bgRed);
                 break;
             default:
-                taskLayout.setBackgroundColor(Color.WHITE);
+                date.setBackgroundColor(Color.WHITE);
                 break;
         }
     }

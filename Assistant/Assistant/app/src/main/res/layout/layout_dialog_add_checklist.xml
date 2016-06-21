@@ -4,12 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_add_checklist"
-        android:textSize="16sp"
-        android:hint="@string/add_checklist"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_weight="5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_add_checklist"
+            android:textSize="16sp"
+            android:hint="@string/add_checklist"/>
+        <ImageView
+            android:id="@+id/im_star_dialog"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@mipmap/ic_star_border_48dp"/>
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +46,6 @@
             android:layout_marginLeft="16dp"
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
-            android:onClick="onClick"
             android:clickable="true"
             android:textSize="16sp"
             android:layout_height="wrap_content"
@@ -39,7 +55,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:id="@+id/tv_time"
-            android:onClick="onClick"
             android:clickable="true"
             android:textSize="16sp"
             android:layout_width="wrap_content"

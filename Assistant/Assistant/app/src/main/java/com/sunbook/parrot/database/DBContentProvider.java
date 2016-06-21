@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.sunbook.parrot.postit.Checklist;
+import com.sunbook.parrot.postit.Reminder;
 
 /**
  * Created by hieuapp on 04/04/2016.
@@ -16,7 +16,7 @@ public abstract class DBContentProvider {
         this.mDb = sqLiteDatabase;
     }
 
-    protected abstract Checklist cursorToEntity(Cursor cursor);
+    protected abstract Reminder cursorToEntity(Cursor cursor);
 
     public int delete(String tableName, String selection, String[] selectionArgs){
         return mDb.delete(tableName,selection,selectionArgs);

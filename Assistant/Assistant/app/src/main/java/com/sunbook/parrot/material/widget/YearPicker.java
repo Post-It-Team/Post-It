@@ -51,7 +51,7 @@ public class YearPicker extends ListView {
     private Paint mPaint;
 
     /**
-     * Interface definition for a callback to be invoked when the selected year is changed.
+     * PostItUI definition for a callback to be invoked when the selected year is changed.
      */
     public interface OnYearChangedListener{
 

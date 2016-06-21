@@ -1,6 +1,6 @@
 package com.sunbook.parrot.database.checklist;
 
-import com.sunbook.parrot.postit.Checklist;
+import com.sunbook.parrot.postit.Reminder;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import java.util.List;
 public interface CheckListDAOInt {
 
     CheckListDAOInt getCheckListById(int checkListId);
-    List<Checklist> getAllCheckList();
-    boolean addCheckList(Checklist checklist);
-    boolean addChecklists(List<Checklist> lists);
+    List<Reminder> getAllCheckList();
+    boolean addCheckList(Reminder reminder);
+    boolean addChecklists(List<Reminder> lists);
     boolean deleteAllCheckList();
     boolean deleteReminder(String id);
 }

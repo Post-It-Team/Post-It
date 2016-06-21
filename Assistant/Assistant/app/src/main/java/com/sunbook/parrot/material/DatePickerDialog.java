@@ -36,7 +36,7 @@ public class DatePickerDialog extends Dialog {
     private float mCornerRadius;
 
     /**
-     * Interface definition for a callback to be invoked when the selected date is changed.
+     * PostItUI definition for a callback to be invoked when the selected date is changed.
      */
     public interface OnDateChangedListener{
 

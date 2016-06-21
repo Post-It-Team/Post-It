@@ -16,22 +16,22 @@ import com.sunbook.parrot.MainActivity;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.database.checklist.ChecklistSchema;
-import com.sunbook.parrot.postit.Checklist;
-import com.sunbook.parrot.utils.Interface;
+import com.sunbook.parrot.postit.Reminder;
+import com.sunbook.parrot.utils.PostItUI;
 
 import java.util.ArrayList;
 
 /**
  * Created by hieuapp on 17/02/2016.
  */
-public class CheckListAdapter extends ArrayAdapter<Checklist> {
-    ArrayList<Checklist> dataCheckList = null;
+public class CheckListAdapter extends ArrayAdapter<Reminder> {
+    ArrayList<Reminder> dataCheckList = null;
     Activity context;
     public static final int MAX_ITEM_CHECKLIST = 5;
     CheckListDB checkListDB;
 
     public static final String TAG = "ChecklistAdapter";
-    public CheckListAdapter(Activity context, int resource, ArrayList<Checklist> data, CheckListDB checkListDB) {
+    public CheckListAdapter(Activity context, int resource, ArrayList<Reminder> data, CheckListDB checkListDB) {
         super(context, resource, data);
         this.dataCheckList = data;
         this.context = context;
@@ -53,24 +53,24 @@ public class CheckListAdapter extends ArrayAdapter<Checklist> {
         return convertView;
     }
 
-    public void showCheckList(ViewHolder viewHolder, final ArrayList<Checklist> dataCheckList, final int position){
+    public void showCheckList(ViewHolder viewHolder, final ArrayList<Reminder> dataCheckList, final int position){
         viewHolder.name.setText(dataCheckList.get(position).getTitle());
-        Typeface regular = Interface.getTypeface(context, Interface.ROBOTO_SLAB_REGULAR);
+        Typeface regular = PostItUI.getTypeface(context, PostItUI.ROBOTO_SLAB_REGULAR);
         viewHolder.name.setTypeface(regular);
         final ViewHolder finalViewHolder = viewHolder;
         if(dataCheckList.get(position).isDone()){
             viewHolder.checkBox.setChecked(true);
-            Interface.setTextHiden(viewHolder.name);
+            PostItUI.setTextHiden(viewHolder.name);
         }
         viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(((CheckBox)v).isChecked()){
-                    Interface.setTextHiden(finalViewHolder.name);
+                    PostItUI.setTextHiden(finalViewHolder.name);
                     setDoneChecklist(position,true);
                 }else {
                     // un trike text
-                    Interface.setTaskDisplay(finalViewHolder.name);
+                    PostItUI.setTaskDisplay(finalViewHolder.name);
                     setDoneChecklist(position,false);
                 }
             }
@@ -78,21 +78,21 @@ public class CheckListAdapter extends ArrayAdapter<Checklist> {
     }
 
     public void setDoneChecklist(int position, boolean done){
-        Checklist checklist = dataCheckList.get(position);
-        checklist.setIsDone(done);
+        Reminder reminder = dataCheckList.get(position);
+        reminder.setIsDone(done);
         ContentValues values = new ContentValues();
-        values.put(ChecklistSchema._ID,checklist.getId());
-        values.put(ChecklistSchema.COLUMN_TITLE,checklist.getTitle());
-        values.put(ChecklistSchema.COLUMN_DEADLINE,checklist.getDeadline());
+        values.put(ChecklistSchema._ID, reminder.getId());
+        values.put(ChecklistSchema.COLUMN_TITLE, reminder.getTitle());
+        values.put(ChecklistSchema.COLUMN_DEADLINE, reminder.getDeadline());
         values.put(ChecklistSchema.COLUMN_IMPORTANT,1);
-        if(checklist.isDone()){
+        if(reminder.isDone()){
             values.put(ChecklistSchema.COLUMN_DONE,1);
         }else {
             values.put(ChecklistSchema.COLUMN_DONE,0);
         }
 
         checkListDB.daoAccess.update(ChecklistSchema.CHECKLIST_TABLE,values,
-                "_id = "+checklist.getId(),null);
+                "_id = "+ reminder.getId(),null);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

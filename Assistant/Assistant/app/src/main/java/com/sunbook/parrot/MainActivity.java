@@ -1,17 +1,16 @@
 package com.sunbook.parrot;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,24 +18,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.sunbook.parrot.calendar.CalendarActivity;
 import com.sunbook.parrot.checklist.CheckListAdapter;
+import com.sunbook.parrot.checklist.DialogReminder;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.material.DatePickerDialog;
 import com.sunbook.parrot.material.DialogFragment;
 import com.sunbook.parrot.material.TimePickerDialog;
 import com.sunbook.parrot.material.dialog.Dialog;
-import com.sunbook.parrot.postit.Checklist;
-import com.sunbook.parrot.utils.Interface;
+import com.sunbook.parrot.postit.Reminder;
+import com.sunbook.parrot.utils.PostItUI;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,11 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText remindInput;
     private TextView tvDate, tvTime;
     private TextView tvCardTitle;
+    private ImageView star;
+    private boolean starImportant = false;
     private RelativeLayout report;
     private CardView cardChecklist;
     public CheckListDB checkListDB;
     private long dateSelected = 0;
     private long timeSelected = 0;
+    private ChecklistChange checklistReceiver;
 
 
     @Override
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
         tvCardTitle = (TextView)findViewById(R.id.tv_title_card);
-        Typeface light = Typeface.createFromAsset(getAssets(), Interface.ROBOTO_SLAB_REGULAR);
+        Typeface light = Typeface.createFromAsset(getAssets(), PostItUI.ROBOTO_SLAB_REGULAR);
         tvCardTitle.setTextColor(Color.BLACK);
         tvCardTitle.setTypeface(light);
         report = (RelativeLayout)findViewById(R.id.report_empty);
@@ -88,14 +90,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fabChecklist.setOnClickListener(this);
         FloatingActionButton fabCamera = (FloatingActionButton)findViewById(R.id.fab_camera);
         fabCamera.setOnClickListener(this);
-
-        checkListDB = new CheckListDB(this);
-        checkListDB.open();
+        checklistReceiver = new ChecklistChange();
+        IntentFilter filter = new IntentFilter(CheckListDB.ACTION_UPDATE_REMINDER);
+        registerReceiver(checklistReceiver,filter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        checkListDB = new CheckListDB(this);
+        checkListDB.open();
         loadCheckList();
     }
 
@@ -131,12 +135,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         checkListDB.close();
+        if(checklistReceiver != null){
+            unregisterReceiver(checklistReceiver);
+        }
     }
     /**
      * Load 5 checklist in database
      */
     public void loadCheckList(){
-        ArrayList<Checklist> listTask = (ArrayList<Checklist>) checkListDB.daoAccess.getAllCheckList();
+        ArrayList<Reminder> listTask = (ArrayList<Reminder>) checkListDB.daoAccess.getAllCheckList();
         if(listTask.size() == 0){
             report.setVisibility(View.VISIBLE);
             cardChecklist.setVisibility(View.INVISIBLE);
@@ -160,7 +167,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this,"Note",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.fab_checklist:
-                addCheckList();
+                DialogReminder dialogReminder = new DialogReminder(this);
+                dialogReminder.show();
+                fabMenu.collapseImmediately();
                 break;
             case R.id.fab_camera:
                 Toast.makeText(this,"Camera",Toast.LENGTH_LONG).show();
@@ -171,10 +180,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.tv_time:
                 showTimePickerDialog();
                 break;
+            case R.id.im_star_dialog:
+                starImportant = !starImportant;
+                Log.e("Star = ",String.valueOf(starImportant));
+                toggleStar();
+                break;
             default:
                 Log.e(TAG,"ID not define" + v.getId());
         }
-
     }
 
     public static void startActivity(Context context, Class mClass){
@@ -207,58 +220,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         frameLayout.setOnTouchListener(null);
     }
 
-    private void addCheckList(){
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .title(R.string.check_list)
-                .customView(R.layout.layout_dialog_add_checklist, true)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        checkListDB.open();
-                        Checklist reminder = new Checklist(remindInput.getText().toString(),dateSelected,false);
-                        insertToDatabase(reminder);
-                    }
-                }).build();
-
-        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
-        controlInputRemind(dialog);
-        setDateTimeRemind(dialog);
-        dialog.show();
-        fabMenu.collapseImmediately();
-        positiveAction.setEnabled(false);
-    }
-
-    public void setDateTimeRemind(MaterialDialog dialog){
-        tvDate = (TextView)dialog.getCustomView().findViewById(R.id.tv_date);
-        tvDate.setPaintFlags(tvDate.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tvTime = (TextView)dialog.getCustomView().findViewById(R.id.tv_time);
-        tvTime.setPaintFlags(tvTime.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-    }
-
-    public void controlInputRemind(MaterialDialog dialog){
-        remindInput = (EditText)dialog.getCustomView().findViewById(R.id.et_add_checklist);
-        remindInput.setFocusable(true);
-        remindInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                positiveAction.setEnabled(s.toString().length() > 0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    public void insertToDatabase(Checklist object){
-        checkListDB.daoAccess.addCheckList(object);
-        loadCheckList();
+    public void toggleStar(){
+        if(starImportant){
+            star.setImageResource(R.mipmap.ic_star_yellow);
+        }else {
+            star.setImageResource(R.mipmap.ic_star_border_48dp);
+        }
     }
 
     public void showDatePickerDialog(){
@@ -305,5 +272,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.positiveAction("OK").negativeAction("CANCEL");
         DialogFragment fragment = DialogFragment.newInstance(builder);
         fragment.show(getSupportFragmentManager(), null);
+    }
+
+    class ChecklistChange extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            openDB(context);
+            switch (action) {
+                case CheckListDB.ACTION_UPDATE_REMINDER:
+                    loadCheckList();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void openDB(Context context) {
+            if (checkListDB == null) {
+                checkListDB = new CheckListDB(context);
+                checkListDB.open();
+            }
+        }
     }
 }

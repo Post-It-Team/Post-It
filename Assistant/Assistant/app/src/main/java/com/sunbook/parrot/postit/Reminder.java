@@ -5,17 +5,18 @@ import java.util.Date;
 /**
  * Created by hieuapp on 06/03/2016.
  */
-public class Checklist extends Note implements AlarmPostIt {
+public class Reminder extends Note implements AlarmPostIt {
     private boolean isDone;
 
-    public Checklist(){
+    public Reminder(){
 
     }
 
-    public Checklist(String title, long deadline, boolean done){
+    public Reminder(String title, long deadline, boolean done, boolean important){
         this.isDone = done;
         this.setTitle(title);
         this.setDeadline(deadline);
+        this.setImportant(important);
     }
     @Override
     public void edit() {

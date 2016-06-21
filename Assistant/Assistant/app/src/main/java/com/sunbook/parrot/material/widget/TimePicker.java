@@ -76,7 +76,7 @@ public class TimePicker extends View implements ThemeManager.OnThemeChangedListe
     private boolean mEdited = false;
 
     /**
-     * Interface definition for a callback to be invoked when the selected time is changed.
+     * PostItUI definition for a callback to be invoked when the selected time is changed.
      */
     public interface OnTimeChangedListener{
 

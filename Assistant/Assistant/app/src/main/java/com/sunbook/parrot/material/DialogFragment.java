@@ -15,7 +15,7 @@ import com.sunbook.parrot.material.dialog.Dialog;
 public class DialogFragment extends android.support.v4.app.DialogFragment{
 
     /**
-     * Interface definition for passing style data.
+     * PostItUI definition for passing style data.
      */
     public interface Builder{
         /**

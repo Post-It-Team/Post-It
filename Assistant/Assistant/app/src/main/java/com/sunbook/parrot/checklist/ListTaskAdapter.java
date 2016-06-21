@@ -14,8 +14,8 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
-import com.sunbook.parrot.postit.Checklist;
-import com.sunbook.parrot.utils.Interface;
+import com.sunbook.parrot.postit.Reminder;
+import com.sunbook.parrot.utils.PostItUI;
 
 import java.util.ArrayList;
 
@@ -25,10 +25,10 @@ import java.util.ArrayList;
  */
 public class ListTaskAdapter extends BaseSwipeAdapter {
     private Context context;
-    private ArrayList<Checklist> checklists;
-    public ListTaskAdapter(Context context, ArrayList<Checklist> checklists){
+    private ArrayList<Reminder> reminders;
+    public ListTaskAdapter(Context context, ArrayList<Reminder> reminders){
         this.context = context;
-        this.checklists = checklists;
+        this.reminders = reminders;
     }
     @Override
     public int getSwipeLayoutResourceId(int position) {
@@ -42,6 +42,7 @@ public class ListTaskAdapter extends BaseSwipeAdapter {
         swipeLayout.addSwipeListener(new SimpleSwipeListener(){
             @Override
             public void onOpen(SwipeLayout layout) {
+
             }
         });
         view.findViewById(R.id.layout_delete).setOnClickListener(new View.OnClickListener() {
@@ -59,34 +60,32 @@ public class ListTaskAdapter extends BaseSwipeAdapter {
 
     @Override
     public void fillValues(int position, final View convertView) {
-        final Checklist task = (Checklist)getItem(position);
+        final Reminder task = (Reminder)getItem(position);
         final ImageView star = (ImageView)convertView.findViewById(R.id.im_star);
         final TextView taskName = (TextView)convertView.findViewById(R.id.tv_reminder);
         final TextView date = (TextView)convertView.findViewById(R.id.tv_date);
         //star yellow if task is not done
         if(task.isDone()){
-           Interface.setTaskHiden(context,convertView);
+           PostItUI.setTaskHiden(context,convertView);
         }else {
-            Interface.setTaskDisplay(context,convertView,task);
+            PostItUI.setTaskDisplay(context,convertView,task);
         }
         if(!task.isImportant()){
             star.setImageResource(R.mipmap.ic_star_border_48dp);
         }
         //hiden task name if task is done
         taskName.setText(task.getTitle());
-//        Interface.setTextFont(context,taskName, Interface.ROBOTO_SLAB_REGULAR);
-//        Interface.setTextFont(context,date, Interface.ROBOTO_SLAB_REGULAR);
         final CheckBox cbDone = (CheckBox)convertView.findViewById(R.id.cb_item);
         cbDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(cbDone.isChecked()){
-                    Interface.setTaskHiden(context,convertView);
+                    PostItUI.setTaskHiden(context,convertView);
                     if(!task.isImportant()){
                         star.setImageResource(R.mipmap.ic_star_border_48dp);
                     }
                 }else {
-                    Interface.setTaskDisplay(context,convertView,task);
+                    PostItUI.setTaskDisplay(context,convertView,task);
                     if(!task.isImportant()){
                         star.setImageResource(R.mipmap.ic_star_border_48dp);
                     }
@@ -101,16 +100,16 @@ public class ListTaskAdapter extends BaseSwipeAdapter {
 
     @Override
     public int getCount() {
-        return checklists.size();
+        return reminders.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return checklists.get(position);
+        return reminders.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return checklists.get(position).getId();
+        return reminders.get(position).getId();
     }
 }

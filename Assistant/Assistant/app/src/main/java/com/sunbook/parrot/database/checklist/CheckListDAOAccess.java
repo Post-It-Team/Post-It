@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.sunbook.parrot.database.DBContentProvider;
-import com.sunbook.parrot.postit.Checklist;
+import com.sunbook.parrot.postit.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,25 +28,25 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
     }
 
     @Override
-    public List<Checklist> getAllCheckList() {
-        List<Checklist> checklists = new ArrayList<Checklist>();
+    public List<Reminder> getAllCheckList() {
+        List<Reminder> reminders = new ArrayList<Reminder>();
         cursor = super.query(CHECKLIST_TABLE,CHECKLIST_COLUMNS,null,null,COLUMN_DEADLINE+" ASC");
         if(cursor == null){
             return null;
         }
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
-            Checklist task = cursorToEntity(cursor);
-            checklists.add(task);
+            Reminder task = cursorToEntity(cursor);
+            reminders.add(task);
             cursor.moveToNext();
         }
         cursor.close();
-        return checklists;
+        return reminders;
     }
 
     @Override
-    public boolean addCheckList(Checklist checklist) {
-        setContentValues(checklist);
+    public boolean addCheckList(Reminder reminder) {
+        setContentValues(reminder);
         try{
             return super.insert(CHECKLIST_TABLE,getContentValues()) > 0;
         }catch (SQLiteConstraintException e){
@@ -56,7 +56,7 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
     }
 
     @Override
-    public boolean addChecklists(List<Checklist> lists) {
+    public boolean addChecklists(List<Reminder> lists) {
         return false;
     }
 
@@ -72,8 +72,8 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
     }
 
     @Override
-    protected Checklist cursorToEntity(Cursor cursor) {
-        Checklist task = new Checklist();
+    protected Reminder cursorToEntity(Cursor cursor) {
+        Reminder task = new Reminder();
         if(cursor == null){
             return null;
         }
@@ -96,12 +96,13 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
         return contentValues;
     }
 
-    public void setContentValues(Checklist task) {
+    public void setContentValues(Reminder task) {
         this.contentValues = new ContentValues();
 //        contentValues.put(_ID,task.getId());
         contentValues.put(COLUMN_TITLE,task.getTitle());
         contentValues.put(COLUMN_DEADLINE,task.getDeadline());
-        contentValues.put(COLUMN_IMPORTANT,1);
+        int important = (task.isImportant())?1:0;
+        contentValues.put(COLUMN_IMPORTANT,important);
         if(task.isDone()){
             contentValues.put(COLUMN_DONE,1);
         }else {
