@@ -17,6 +17,7 @@ public class Note implements AlarmPostIt {
     private boolean important;
     private Bitmap avatar;
     private String history;
+    private long time;
 
     public int checkDeadline() {
         Date today = new Date();
@@ -126,5 +127,13 @@ public class Note implements AlarmPostIt {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

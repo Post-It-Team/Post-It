@@ -64,7 +64,7 @@ public class DialogReminder implements View.OnClickListener {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         checkListDB.open();
                         Reminder reminder = new Reminder(remindInput.getText().toString(),
-                                dateSelected,false, starImportant);
+                                dateSelected,timeSelected,false, starImportant);
                         insertToDatabase(reminder);
                         Intent intent = new Intent(CheckListDB.ACTION_UPDATE_REMINDER);
                         context.sendBroadcast(intent);
@@ -95,8 +95,7 @@ public class DialogReminder implements View.OnClickListener {
             @Override
             public void onPositiveActionClicked(DialogFragment fragment) {
                 TimePickerDialog dialog = (TimePickerDialog)fragment.getDialog();
-                timeSelected = dialog.getHour()*3600000 + dialog.getMinute()*60000;
-                Log.e("Time = ",""+timeSelected);
+                timeSelected = dialog.getHour()*60 + dialog.getMinute();
                 tvTime.setText(dialog.getHour()+":"+dialog.getMinute());
                 super.onPositiveActionClicked(fragment);
             }

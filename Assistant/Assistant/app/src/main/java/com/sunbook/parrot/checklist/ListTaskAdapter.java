@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+import com.sunbook.parrot.MainActivity;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.postit.Reminder;
@@ -64,6 +65,7 @@ public class ListTaskAdapter extends BaseSwipeAdapter {
         final ImageView star = (ImageView)convertView.findViewById(R.id.im_star);
         final TextView taskName = (TextView)convertView.findViewById(R.id.tv_reminder);
         final TextView date = (TextView)convertView.findViewById(R.id.tv_date);
+        MainActivity.displayTimeRemind(date,task);
         //star yellow if task is not done
         if(task.isDone()){
            PostItUI.setTaskHiden(context,convertView);

@@ -25,6 +25,7 @@
     <color name="gray_300">#E0E0E0</color>
     <color name="gray_800">#424242</color>
     <color name="gray_900">#212121</color>
+    <color name="black_opacity_54">#8A8A8A</color>
 
     <color name="teal_200">#80CBC4</color>
 

@@ -14,9 +14,11 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
+import com.sunbook.parrot.MainActivity;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.postit.Reminder;
@@ -41,7 +43,6 @@ public class ChecklistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checklist);
-        getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         updateReceiver = new DBUpdateReceiver();
         IntentFilter filter = new IntentFilter(CheckListDB.ACTION_DELETE_REMINDER);
         filter.addAction(CheckListDB.ACTION_UPDATE_REMINDER);
@@ -84,6 +85,7 @@ public class ChecklistActivity extends AppCompatActivity {
                 ((SwipeLayout)(lvTask.getChildAt(position - lvTask.getFirstVisiblePosition()))).open(true);
             }
         });
+
     }
     @Override
     public void onResume() {

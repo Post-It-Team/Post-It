@@ -3,13 +3,15 @@ package com.sunbook.parrot.utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by hieuapp on 21/06/2016.
  */
 public class PostItDate {
 
+    public static final String TODAY = "today";
+    public static final String NO_TIME = "no_time";
+    public static final String NO_DATE = "no_date";
     public static String convertDate(long timestamp, String languageCode){
         String dateConverted = "";
         switch (languageCode){
@@ -36,9 +38,9 @@ public class PostItDate {
             int dayTimeStamp = calendar.get(Calendar.DAY_OF_MONTH);
             int dayOfMonth = today.get(Calendar.DAY_OF_MONTH);
             if(dayTimeStamp == dayOfMonth){
-                result = convertByHour(timestamp);
+                result = PostItDate.TODAY;
             }else {
-                result = convertByMonth(timestamp);
+                result = formatMonthVN(timestamp);
             }
         }else {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -48,7 +50,10 @@ public class PostItDate {
         return result;
     }
 
-    public static String convertByMonth(long timestamp){
+    public static String formatMonthVN(long timestamp){
+        if(timestamp == 0){
+            return NO_DATE;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date(timestamp));
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -56,7 +61,16 @@ public class PostItDate {
         return day + " thg "+month;
     }
 
-    public static String convertByHour(long timestamp){
-        return null;
+    public static String formatHour(long timestamp){
+        if(timestamp == 0){
+            return NO_TIME;
+        }
+        long hour = timestamp / 60;
+        long minute = timestamp % 60;
+        String strMinute = String.valueOf(minute);
+        if(minute/10 == 0){
+            strMinute = "0"+minute;
+        }
+        return hour + ":" + strMinute;
     }
 }

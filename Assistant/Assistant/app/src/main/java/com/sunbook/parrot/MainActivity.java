@@ -16,9 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,14 +28,10 @@ import com.sunbook.parrot.calendar.CalendarActivity;
 import com.sunbook.parrot.checklist.CheckListAdapter;
 import com.sunbook.parrot.checklist.DialogReminder;
 import com.sunbook.parrot.database.checklist.CheckListDB;
-import com.sunbook.parrot.material.DatePickerDialog;
-import com.sunbook.parrot.material.DialogFragment;
-import com.sunbook.parrot.material.TimePickerDialog;
-import com.sunbook.parrot.material.dialog.Dialog;
 import com.sunbook.parrot.postit.Reminder;
+import com.sunbook.parrot.utils.PostItDate;
 import com.sunbook.parrot.utils.PostItUI;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -47,21 +41,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String TAG = "MainActivity";
     public static FloatingActionsMenu fabMenu;
     FrameLayout frameLayout;
-
     public static final int HOUR_OF_DAY = 24;
     public static final int MINUTE = 00;
-
-    private View positiveAction;
-    private EditText remindInput;
-    private TextView tvDate, tvTime;
     private TextView tvCardTitle;
-    private ImageView star;
     private boolean starImportant = false;
     private RelativeLayout report;
     private CardView cardChecklist;
     public CheckListDB checkListDB;
-    private long dateSelected = 0;
-    private long timeSelected = 0;
     private ChecklistChange checklistReceiver;
 
 
@@ -143,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Load 5 checklist in database
      */
     public void loadCheckList(){
-        ArrayList<Reminder> listTask = (ArrayList<Reminder>) checkListDB.daoAccess.getAllCheckList();
+        ArrayList<Reminder> listTask = (ArrayList<Reminder>) checkListDB
+                .daoAccess.getTaskMostImportant();
         if(listTask.size() == 0){
             report.setVisibility(View.VISIBLE);
             cardChecklist.setVisibility(View.INVISIBLE);
@@ -154,6 +141,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lvCheckList.setAdapter(checkListAdapter);
             report.setVisibility(View.INVISIBLE);
             cardChecklist.setVisibility(View.VISIBLE);
+            TextView nextAlarm = (TextView)findViewById(R.id.tv_next_alarm);
+            displayTimeRemind(nextAlarm,listTask.get(0));
+        }
+    }
+
+    public static void displayTimeRemind(TextView nextAlarm, Reminder nextReminder){
+        long time = nextReminder.getTime();
+        long date = nextReminder.getDeadline();
+        String dateRemind = PostItDate.convertToVietnam(date);
+        if(dateRemind.equals(PostItDate.TODAY)){
+            String hour = PostItDate.formatHour(time);
+            nextAlarm.setText(hour);
+            if(!hour.equals(PostItDate.NO_TIME)){
+                nextAlarm.setText("");
+                nextAlarm.setBackgroundColor(Color.WHITE);
+            }
+        }else if(dateRemind.equals(PostItDate.NO_DATE)){
+            nextAlarm.setText("");
+        }else {
+            nextAlarm.setText(dateRemind);
         }
     }
     /**
@@ -173,17 +180,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.fab_camera:
                 Toast.makeText(this,"Camera",Toast.LENGTH_LONG).show();
-                break;
-            case R.id.tv_date:
-                showDatePickerDialog();
-                break;
-            case R.id.tv_time:
-                showTimePickerDialog();
-                break;
-            case R.id.im_star_dialog:
-                starImportant = !starImportant;
-                Log.e("Star = ",String.valueOf(starImportant));
-                toggleStar();
                 break;
             default:
                 Log.e(TAG,"ID not define" + v.getId());
@@ -218,60 +214,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onMenuCollapsed() {
         frameLayout.getBackground().setAlpha(0);
         frameLayout.setOnTouchListener(null);
-    }
-
-    public void toggleStar(){
-        if(starImportant){
-            star.setImageResource(R.mipmap.ic_star_yellow);
-        }else {
-            star.setImageResource(R.mipmap.ic_star_border_48dp);
-        }
-    }
-
-    public void showDatePickerDialog(){
-        Dialog.Builder builder = new DatePickerDialog.Builder(
-                R.style.Material_App_Dialog_DatePicker_Light){
-            @Override
-            public void onPositiveActionClicked(DialogFragment fragment) {
-                DatePickerDialog dialog = (DatePickerDialog)fragment.getDialog();
-                String date = dialog.getFormattedDate(SimpleDateFormat.getDateInstance());
-                tvDate.setText(date);
-                dateSelected = dialog.getDate();
-                super.onPositiveActionClicked(fragment);
-            }
-
-            @Override
-            public void onNegativeActionClicked(DialogFragment fragment) {
-                super.onNegativeActionClicked(fragment);
-            }
-        };
-
-        builder.positiveAction("OK")
-                .negativeAction("CANCEL");
-        DialogFragment fragment = DialogFragment.newInstance(builder);
-        fragment.show(getSupportFragmentManager(), null);
-    }
-
-    public void showTimePickerDialog(){
-        Dialog.Builder builder = new TimePickerDialog.Builder(
-                R.style.Material_App_Dialog_TimePicker_Light,HOUR_OF_DAY, MINUTE){
-            @Override
-            public void onPositiveActionClicked(DialogFragment fragment) {
-                TimePickerDialog dialog = (TimePickerDialog)fragment.getDialog();
-                timeSelected = dialog.getHour()*60 + dialog.getMinute();
-                tvTime.setText(dialog.getHour()+":"+dialog.getMinute());
-                super.onPositiveActionClicked(fragment);
-            }
-
-            @Override
-            public void onNegativeActionClicked(DialogFragment fragment) {
-                super.onNegativeActionClicked(fragment);
-            }
-        };
-
-        builder.positiveAction("OK").negativeAction("CANCEL");
-        DialogFragment fragment = DialogFragment.newInstance(builder);
-        fragment.show(getSupportFragmentManager(), null);
     }
 
     class ChecklistChange extends BroadcastReceiver {

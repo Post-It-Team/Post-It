@@ -12,11 +12,12 @@ public class Reminder extends Note implements AlarmPostIt {
 
     }
 
-    public Reminder(String title, long deadline, boolean done, boolean important){
+    public Reminder(String title, long deadline, long time, boolean done, boolean important){
         this.isDone = done;
         this.setTitle(title);
         this.setDeadline(deadline);
         this.setImportant(important);
+        this.setTime(time);
     }
     @Override
     public void edit() {

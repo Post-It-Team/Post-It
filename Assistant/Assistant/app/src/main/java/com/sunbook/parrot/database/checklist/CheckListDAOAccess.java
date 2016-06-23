@@ -2,6 +2,7 @@ package com.sunbook.parrot.database.checklist;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -44,12 +45,37 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
         return reminders;
     }
 
+    public List<Reminder> getTaskMostImportant(){
+        List<Reminder> reminders = new ArrayList<>();
+        StringBuilder where = new StringBuilder();
+        where.append(COLUMN_DONE).append(" = ?").append(" AND ");
+        where.append(COLUMN_DEADLINE).append(" != ?");
+        String[] args = new String[]{NOT_DONE,"0"};
+        Cursor cursor = super.query(
+                CHECKLIST_TABLE,
+                CHECKLIST_COLUMNS,
+                where.toString(),args,
+                COLUMN_DEADLINE+" ASC",
+                "5");
+        if(cursor == null){
+            return null;
+        }
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            Reminder task = cursorToEntity(cursor);
+            reminders.add(task);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return reminders;
+    }
+
     @Override
     public boolean addCheckList(Reminder reminder) {
         setContentValues(reminder);
         try{
             return super.insert(CHECKLIST_TABLE,getContentValues()) > 0;
-        }catch (SQLiteConstraintException e){
+        }catch (SQLException e){
             e.printStackTrace();
             return false;
         }
@@ -98,15 +124,16 @@ public class CheckListDAOAccess extends DBContentProvider implements CheckListDA
 
     public void setContentValues(Reminder task) {
         this.contentValues = new ContentValues();
-//        contentValues.put(_ID,task.getId());
         contentValues.put(COLUMN_TITLE,task.getTitle());
         contentValues.put(COLUMN_DEADLINE,task.getDeadline());
+        String time = String.valueOf(task.getTime());
+        if(task.getTime() == 0){
+            time = "3786912000000";
+        }
+        contentValues.put(COLUMN_TIME,time);
         int important = (task.isImportant())?1:0;
         contentValues.put(COLUMN_IMPORTANT,important);
-        if(task.isDone()){
-            contentValues.put(COLUMN_DONE,1);
-        }else {
-            contentValues.put(COLUMN_DONE,0);
-        }
+        int done = (task.isDone())?1:0;
+        contentValues.put(COLUMN_DONE,done);
     }
 }

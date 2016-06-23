@@ -47,19 +47,21 @@
                 android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@color/gray_500"
+                android:background="@color/black_opacity_54"
                 android:layout_marginTop="8dp"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="12dp"
                     android:id="@+id/iv_alarm"
                     android:layout_centerVertical="true"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@mipmap/ic_time_24dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@mipmap/ic_access_time"
                     />
                 <TextView
                     android:layout_toRightOf="@+id/iv_alarm"
@@ -68,8 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:textColor="@color/gray_500"
-                    android:text="September 19"/>
+                    android:id="@+id/tv_next_alarm"/>
             </RelativeLayout>
 
         </LinearLayout>

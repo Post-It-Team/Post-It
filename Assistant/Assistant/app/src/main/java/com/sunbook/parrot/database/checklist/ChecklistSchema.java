@@ -11,6 +11,10 @@ public interface ChecklistSchema extends BaseColumns {
     String COLUMN_DEADLINE = "deadline";
     String COLUMN_DONE = "done";
     String COLUMN_IMPORTANT = "important";
+    String COLUMN_TIME = "time";
+
+    String DONE = "1";
+    String NOT_DONE = "0";
 
     String CREATE_TABLE_CHECKLIST = "CREATE TABLE IF NOT EXISTS "
             + CHECKLIST_TABLE
@@ -21,6 +25,8 @@ public interface ChecklistSchema extends BaseColumns {
             + " TEXT NOT NULL, "
             + COLUMN_DEADLINE
             + " INTEGER NOT NULL, "
+            + COLUMN_TIME
+            + " TEXT NOT NULL, "
             + COLUMN_DONE
             + " INTEGER NOT NULL, "
             + COLUMN_IMPORTANT
@@ -28,5 +34,5 @@ public interface ChecklistSchema extends BaseColumns {
             + ")";
 
     String[] CHECKLIST_COLUMNS = new String[]{BaseColumns._ID,
-            COLUMN_TITLE,COLUMN_DEADLINE,COLUMN_DONE,COLUMN_IMPORTANT};
+            COLUMN_TITLE,COLUMN_DEADLINE,COLUMN_TIME,COLUMN_DONE,COLUMN_IMPORTANT};
 }
