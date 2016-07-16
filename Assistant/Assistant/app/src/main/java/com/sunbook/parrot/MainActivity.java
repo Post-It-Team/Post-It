@@ -7,6 +7,12 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +25,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +40,7 @@ import com.sunbook.parrot.utils.PostItDate;
 import com.sunbook.parrot.utils.PostItUI;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -40,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static final String TAG = "MainActivity";
     public static FloatingActionsMenu fabMenu;
+    FloatingActionButton fabNote, fabCamera;
+    android.support.design.widget.FloatingActionButton fabReminder;
     FrameLayout frameLayout;
     public static final int HOUR_OF_DAY = 24;
     public static final int MINUTE = 00;
@@ -50,43 +60,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public CheckListDB checkListDB;
     private ChecklistChange checklistReceiver;
 
+    private Toolbar toolbar;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tvCardTitle = (TextView)findViewById(R.id.tv_title_card);
-        Typeface light = Typeface.createFromAsset(getAssets(), PostItUI.ROBOTO_SLAB_REGULAR);
-        tvCardTitle.setTextColor(Color.BLACK);
-        tvCardTitle.setTypeface(light);
-        report = (RelativeLayout)findViewById(R.id.report_empty);
-        cardChecklist = (CardView)findViewById(R.id.cv_checklist);
+        viewPager = (ViewPager)findViewById(R.id.viewpager);
+        setupViewpager(viewPager);
+        tabLayout = (TabLayout)findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabTextColors(ContextCompat.getColorStateList(this, R.drawable.tab_selected));
+        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.white));
+
+        viewPager.addOnPageChangeListener( new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                animateFab(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
         frameLayout.getBackground().setAlpha(0);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
         fabMenu.setOnFloatingActionsMenuUpdateListener(this);
 
-        FloatingActionButton fabNote = (FloatingActionButton)findViewById(R.id.fab_note);
+        fabNote = (FloatingActionButton)findViewById(R.id.fab_note);
         fabNote.setOnClickListener(this);
-        FloatingActionButton fabChecklist = (FloatingActionButton)findViewById(R.id.fab_checklist);
-        fabChecklist.setOnClickListener(this);
-        FloatingActionButton fabCamera = (FloatingActionButton)findViewById(R.id.fab_camera);
+        fabCamera = (FloatingActionButton)findViewById(R.id.fab_camera);
         fabCamera.setOnClickListener(this);
-        checklistReceiver = new ChecklistChange();
-        IntentFilter filter = new IntentFilter(CheckListDB.ACTION_UPDATE_REMINDER);
-        registerReceiver(checklistReceiver,filter);
+        fabReminder = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab_reminder);
+        fabReminder.setOnClickListener(this);
+    }
+
+    public void animateFab(int position){
+        switch (position){
+            case 0:
+                fabReminder.hide();
+                fabMenu.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                fabReminder.show();
+                fabMenu.setVisibility(View.INVISIBLE);
+                break;
+            default:
+                fabReminder.hide();
+                fabMenu.setVisibility(View.VISIBLE);
+                break;
+
+        }
+    }
+
+    private void setupViewpager(ViewPager viewPager){
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new CardNoteFragment(), "Note");
+        adapter.addFragment(new ReminderFragment(), "Reminder");
+        viewPager.setAdapter(adapter);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        checkListDB = new CheckListDB(this);
-        checkListDB.open();
-        loadCheckList();
     }
 
     @Override
@@ -120,10 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        checkListDB.close();
-        if(checklistReceiver != null){
-            unregisterReceiver(checklistReceiver);
-        }
     }
     /**
      * Load 5 checklist in database
@@ -172,11 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.fab_note:
                 Toast.makeText(this,"Note",Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.fab_checklist:
-                DialogReminder dialogReminder = new DialogReminder(this);
-                dialogReminder.show();
-                fabMenu.collapseImmediately();
                 break;
             case R.id.fab_camera:
                 Toast.makeText(this,"Camera",Toast.LENGTH_LONG).show();
@@ -235,6 +278,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 checkListDB = new CheckListDB(context);
                 checkListDB.open();
             }
+        }
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter{
+        private final List<Fragment> fragmentList = new ArrayList<>();
+        private final List<String> fragmentTitle = new ArrayList<>();
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title){
+            fragmentList.add(fragment);
+            fragmentTitle.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragmentTitle.get(position);
         }
     }
 }
