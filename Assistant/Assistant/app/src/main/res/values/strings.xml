@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PostIt</string>
+    <string name="app_name">Student Note</string>
     <string name="action_settings">Settings</string>
     <string name="fab_checklist">Checklist</string>
     <string name="fab_note_photographs">Note hình ảnh</string>

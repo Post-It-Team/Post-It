@@ -1,72 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.daimajia.swipe.SwipeLayout
-    xmlns:swipe="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/task_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    swipe:leftEdgeSwipeOffset="0dp"
-    swipe:rightEdgeSwipeOffset="0dp">
+    android:minHeight="56dp"
+    android:background="#FFFFFF"
+    android:layout_height="wrap_content">
+    <CheckBox
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cb_item"/>
 
-    <LinearLayout
-        android:background="@color/colorPrimaryDark"
-        android:layout_width="80dp"
+    <ImageView
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/cb_item"
+        android:layout_marginLeft="8dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:clickable="true"
-        android:id="@+id/layout_delete"
-        android:layout_height="match_parent">
+        android:id="@+id/im_star"
+        android:src="@mipmap/ic_star_border_48dp"/>
 
-        <ImageView
-            android:layout_marginLeft="28dp"
-            android:layout_gravity="center"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@mipmap/ic_delete_forever_white"/>
-    </LinearLayout>
+    <TextView
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/im_star"
+        android:layout_toLeftOf="@+id/tv_date"
+        android:layout_marginRight="8dp"
+        android:text="write some thing about you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_reminder"/>
 
-    <RelativeLayout
-        android:id="@+id/task_layout"
-        android:layout_width="match_parent"
-        android:minHeight="56dp"
-        android:background="#FFFFFF"
-        android:layout_height="wrap_content">
-        <CheckBox
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/cb_item"/>
-
-        <ImageView
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/cb_item"
-            android:layout_marginLeft="8dp"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:clickable="true"
-            android:id="@+id/im_star"
-            android:src="@mipmap/ic_star_border_48dp"/>
-
-        <TextView
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@id/im_star"
-            android:layout_toLeftOf="@+id/tv_date"
-            android:layout_marginRight="8dp"
-            android:text="write some thing about you"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_reminder"/>
-
-        <TextView
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp"
-            android:id="@+id/tv_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-</com.daimajia.swipe.SwipeLayout>
+    <TextView
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PostIt</string>
+    <string name="app_name">Student Note</string>
     <string name="action_settings">Settings</string>
     <string name="fab_checklist">Reminder</string>
     <string name="fab_note_photographs">Image Note</string>

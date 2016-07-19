@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_300"
+    android:id="@+id/coordinator"
     android:fitsSystemWindows="true"
     tools:context="com.sunbook.parrot.MainActivity">
 
@@ -36,15 +37,22 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
 
-    <include layout="@layout/fab_layout"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@mipmap/ic_photo_camera_white_24dp"
+        android:visibility="visible"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_reminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
         android:src="@mipmap/ic_playlist_add_white_24dp"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
 </android.support.design.widget.CoordinatorLayout>

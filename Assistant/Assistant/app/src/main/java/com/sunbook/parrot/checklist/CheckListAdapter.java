@@ -3,20 +3,22 @@ package com.sunbook.parrot.checklist;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v7.widget.RecyclerView;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sunbook.parrot.MainActivity;
 import com.sunbook.parrot.R;
 import com.sunbook.parrot.database.checklist.CheckListDB;
 import com.sunbook.parrot.database.checklist.ChecklistSchema;
 import com.sunbook.parrot.postit.Reminder;
+import com.sunbook.parrot.utils.PostItColor;
+import com.sunbook.parrot.utils.PostItDate;
 import com.sunbook.parrot.utils.PostItUI;
 
 import java.util.ArrayList;
@@ -25,60 +27,68 @@ import java.util.ArrayList;
  * Created by hieuapp on 17/02/2016.
  */
 public class CheckListAdapter extends ArrayAdapter<Reminder> {
-    ArrayList<Reminder> dataCheckList = null;
+    ArrayList<Reminder> reminders = null;
     Activity context;
-    public static final int MAX_ITEM_CHECKLIST = 5;
     CheckListDB checkListDB;
 
     public static final String TAG = "ChecklistAdapter";
-    public CheckListAdapter(Activity context, int resource, ArrayList<Reminder> data, CheckListDB checkListDB) {
+    public CheckListAdapter(Activity context, int resource, ArrayList<Reminder> data) {
         super(context, resource, data);
-        this.dataCheckList = data;
+        this.reminders = data;
         this.context = context;
-        this.checkListDB = checkListDB;
+        this.checkListDB = new CheckListDB(context);
+        checkListDB.open();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
+        final Reminder reminder = reminders.get(position);
         LayoutInflater layoutInflater = context.getLayoutInflater();
         if(convertView == null){
-            convertView = layoutInflater.inflate(R.layout.checklist_item,null);
-            viewHolder = new ViewHolder(context,convertView);
+            convertView = layoutInflater.inflate(R.layout.checklist_item_detail,null);
+            viewHolder = new ViewHolder();
+            viewHolder.checkBox = (CheckBox)convertView.findViewById(R.id.cb_item);
+            viewHolder.star = (ImageView)convertView.findViewById(R.id.im_star);
+            viewHolder.taskName = (TextView) convertView.findViewById(R.id.tv_reminder);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.tv_date);
             convertView.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
-        showCheckList(viewHolder,dataCheckList, position);
-        return convertView;
-    }
 
-    public void showCheckList(ViewHolder viewHolder, final ArrayList<Reminder> dataCheckList, final int position){
-        viewHolder.name.setText(dataCheckList.get(position).getTitle());
-        Typeface regular = PostItUI.getTypeface(context, PostItUI.ROBOTO_SLAB_REGULAR);
-        viewHolder.name.setTypeface(regular);
-        final ViewHolder finalViewHolder = viewHolder;
-        if(dataCheckList.get(position).isDone()){
-            viewHolder.checkBox.setChecked(true);
-            PostItUI.setTextHiden(viewHolder.name);
+        displayTimeRemind(viewHolder.date, reminder);
+        if(reminder.isDone()){
+            setTaskHiden(context, viewHolder);
+        }else {
+            setTaskDisplay(context, reminder, viewHolder);
         }
+        if(!reminder.isImportant()){
+            viewHolder.star.setImageResource(R.mipmap.ic_star_border_48dp);
+        }
+        viewHolder.taskName.setText(reminder.getTitle());
+        final ViewHolder finalViewHolder = viewHolder;
         viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if(((CheckBox)v).isChecked()){
-                    PostItUI.setTextHiden(finalViewHolder.name);
-                    setDoneChecklist(position,true);
+            public void onClick(View view) {
+                if(finalViewHolder.checkBox.isChecked()){
+                    setTaskHiden(context, finalViewHolder);
+                    if(!reminder.isImportant()){
+                        finalViewHolder.star.setImageResource(R.mipmap.ic_star_border_48dp);
+                    }
                 }else {
-                    // un trike text
-                    PostItUI.setTaskDisplay(finalViewHolder.name);
-                    setDoneChecklist(position,false);
+                    setTaskDisplay(context, reminder, finalViewHolder);
+                    if(!reminder.isImportant()){
+                        finalViewHolder.star.setImageResource(R.mipmap.ic_star_border_48dp);
+                    }
                 }
             }
         });
+        return convertView;
     }
 
     public void setDoneChecklist(int position, boolean done){
-        Reminder reminder = dataCheckList.get(position);
+        Reminder reminder = reminders.get(position);
         reminder.setIsDone(done);
         ContentValues values = new ContentValues();
         values.put(ChecklistSchema._ID, reminder.getId());
@@ -95,26 +105,72 @@ public class CheckListAdapter extends ArrayAdapter<Reminder> {
                 "_id = "+ reminder.getId(),null);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private void setDateColor(Context context, Reminder task, ViewHolder viewHolder){
+        int deadlineStatus = task.checkDeadline();
+        switch (deadlineStatus){
+            case Reminder.IN_DATE:
+                viewHolder.date.setBackgroundColor(Color.WHITE);
+                viewHolder.date.setTextColor(Color.BLACK);
+                break;
+            case Reminder.NEAR_DEADLINE:
+                int bgColor = context.getResources().getColor(R.color.yellow_300);
+                viewHolder.date.setBackgroundColor(bgColor);
+                viewHolder.date.setTextColor(Color.BLACK);
+                break;
+            case Reminder.OUT_OF_DATE:
+                int bgRed = context.getResources().getColor(R.color.red_300);
+                viewHolder.date.setBackgroundColor(bgRed);
+                break;
+            default:
+                viewHolder.date.setBackgroundColor(Color.WHITE);
+                break;
+        }
+    }
+
+    private void setTaskHiden(Context context, ViewHolder viewHolder){
+        viewHolder.star.setImageResource(R.mipmap.ic_start_hiden);
+        viewHolder.taskName.setTextColor(PostItColor.getDisableColor());
+        viewHolder.taskName.setPaintFlags(viewHolder.taskName.getPaintFlags()
+                | Paint.STRIKE_THRU_TEXT_FLAG);
+        PostItUI.setTextFont(context,viewHolder.taskName,PostItUI.ROBOTO_LIGHT);
+        viewHolder.date.setTextColor(PostItColor.getDisableColor());
+        viewHolder.date.setBackgroundColor(Color.WHITE);
+    }
+
+    private void setTaskDisplay(Context context, Reminder reminder, ViewHolder viewHolder){
+        viewHolder.star.setImageResource(R.mipmap.ic_star_yellow);
+        viewHolder.taskName.setPaintFlags(viewHolder.taskName.getPaintFlags()
+                & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        viewHolder.taskName.setTextColor(Color.BLACK);
+        if(reminder.checkDeadline() != Reminder.IN_DATE){
+            PostItUI.setTextFont(context,viewHolder.taskName,PostItUI.ROBOTO_BOLD);
+            viewHolder.date.setTextColor(Color.WHITE);
+            viewHolder.date.setBackgroundColor(Color.parseColor(PostItColor.TEAL_500));
+        }
+        setDateColor(context, reminder, viewHolder);
+    }
+
+    private void displayTimeRemind(TextView nextAlarm, Reminder nextReminder){
+        long time = nextReminder.getTime();
+        long date = nextReminder.getDeadline();
+        String dateRemind = PostItDate.convertToVietnam(date);
+        if(dateRemind.equals(PostItDate.TODAY)){
+            String hour = PostItDate.formatHour(time);
+            nextAlarm.setText(hour);
+            if(!hour.equals(PostItDate.NO_TIME)){
+                nextAlarm.setText("");
+                nextAlarm.setBackgroundColor(Color.WHITE);
+            }
+        }else if(dateRemind.equals(PostItDate.NO_DATE)){
+            nextAlarm.setText("");
+        }else {
+            nextAlarm.setText(dateRemind);
+        }
+    }
+
+    static class ViewHolder {
         CheckBox checkBox;
-        TextView name, deadline;
-        Context context;
-
-        public ViewHolder(Context context,View itemView) {
-            super(itemView);
-            checkBox = (CheckBox)itemView.findViewById(R.id.cb_checklist);
-            name = (TextView)itemView.findViewById(R.id.tv_name);
-            itemView.setOnClickListener(this);
-            this.context = context;
-        }
-
-        /**
-         * Called when click on Card checklist
-         * @param v
-         */
-        @Override
-        public void onClick(View v) {
-            MainActivity.startActivity(context, ChecklistActivity.class);
-        }
+        TextView taskName, date;
+        ImageView star;
     }
 }
