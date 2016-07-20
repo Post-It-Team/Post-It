@@ -1,5 +1,6 @@
 package com.sunbook.parrot;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CoordinatorLayout coordinatorLayout;
     public static final int HOUR_OF_DAY = 24;
     public static final int MINUTE = 00;
+    private static final int REQUEST_CAMERA_PERMISSION_CODE = 1994;
     public static ArrayList<Reminder> listTask;
     public CheckListDB checkListDB;
 
@@ -162,8 +165,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.fab_camera:
                 if(hasCamera(this)){
-                    Intent intent = new Intent(this, CameraActivity.class);
-                    startActivity(intent);
+                    if(ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                        requestCameraPermission();
+                    }else {
+                        Intent intent = new Intent(this, CameraActivity.class);
+                        startActivity(intent);
+                    }
                 }else {
                     Toast.makeText(MainActivity.this, "Camera is unavailable", Toast.LENGTH_SHORT)
                             .show();
@@ -175,6 +183,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             default:
                 Log.e(TAG,"ID not define" + v.getId());
+        }
+    }
+
+    private void requestCameraPermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
+            Toast.makeText(MainActivity.this, "explain", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION_CODE);
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA_PERMISSION_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(this, CameraActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
         }
     }
 
